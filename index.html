@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>No.6 Gemini — Discord Indexer Dashboard</title>
+  <!-- Google Fonts Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at 50% 50%, #0e1730, #080d1a 80%);
+      --panel-bg: rgba(13, 22, 47, 0.45);
+      --panel-border: rgba(38, 48, 77, 0.6);
+      --glow-blue: #00ffff;
+      --glow-gold: #ffaa00;
+      --text-main: #e8ecff;
+      --text-muted: #8c9bbf;
+      --accent-blue: #5865f2;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: grid;
+      grid-template-rows: 64px 1fr;
+    }
+
+    header {
+      background: rgba(8, 13, 26, 0.8);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--panel-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 100;
+    }
+
+    header h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff, #9aa7d8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    header h1 span {
+      background: rgba(88, 101, 242, 0.2);
+      border: 1px solid var(--accent-blue);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 11px;
+      color: #9eb5ff;
+      letter-spacing: 0.5px;
+    }
+
+    .meta {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Layout Main Grid */
+    main {
+      display: grid;
+      grid-template-columns: 280px 1fr 340px;
+      height: calc(100vh - 64px);
+      overflow: hidden;
+    }
+
+    /* Left Sidebar: Controls & Live Pipeline */
+    .sidebar {
+      background: rgba(8, 13, 26, 0.3);
+      border-right: 1px solid var(--panel-border);
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      gap: 20px;
+      overflow-y: auto;
+    }
+
+    .sidebar h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .card {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 14px;
+      padding: 16px;
+      backdrop-filter: blur(8px);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      margin-bottom: 10px;
+    }
+
+    .btn-primary {
+      background: var(--accent-blue);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 16px rgba(88, 101, 242, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(38, 48, 77, 0.45);
+      border: 1px solid var(--panel-border);
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(38, 48, 77, 0.7);
+    }
+
+    .progress-container {
+      margin-top: 10px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--glow-blue), var(--accent-blue));
+      transition: width 0.1s ease;
+    }
+
+    /* Terminal logs */
+    .logs {
+      flex-1: 1;
+      background: rgba(4, 7, 18, 0.8);
+      border: 1px solid var(--panel-border);
+      border-radius: 10px;
+      font-family: monospace;
+      font-size: 11px;
+      padding: 12px;
+      overflow-y: auto;
+      height: 220px;
+      color: #92a4cc;
+      line-height: 1.5;
+    }
+
+    /* Central Panel: 3D Visualization */
+    .viewport {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .viewport-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--panel-border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(8, 13, 26, 0.2);
+    }
+
+    .viewport-header button {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 12px;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .viewport-header button.active {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+    }
+
+    /* 3D Engine Box */
+    .canvas3d-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      perspective: 800px;
+      background: radial-gradient(circle at center, #1b2647 0%, #080d1a 70%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .canvas3d {
+      width: 400px;
+      height: 400px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease;
+    }
+
+    .axes-helper {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      pointer-events: none;
+      opacity: 0.35;
+    }
+
+    .axis {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .axis-x { width: 300px; height: 1px; transform: translate(-50%, -50%); }
+    .axis-y { width: 1px; height: 300px; transform: translate(-50%, -50%); }
+    .axis-z { width: 1px; height: 1px; transform: translate(-50%, -50%) rotateY(90deg); background: none; border-left: 1px dashed rgba(255, 255, 255, 0.25); height: 300px; }
+
+    .vector-point {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      left: 50%;
+      top: 50%;
+      transform-style: preserve-3d;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .vector-point::after {
+      content: '';
+      position: absolute;
+      left: -4px;
+      top: -4px;
+      right: -4px;
+      bottom: -4px;
+      border-radius: 50%;
+      background: inherit;
+      opacity: 0.35;
+      filter: blur(4px);
+    }
+
+    .vector-point:hover {
+      transform: scale(2.2) !important;
+      z-index: 1000;
+    }
+
+    /* Centroid / Clusters view overlay */
+    .cluster-card-label {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform-style: preserve-3d;
+      background: rgba(8, 13, 26, 0.75);
+      border: 1px solid var(--panel-border);
+      border-radius: 6px;
+      padding: 4px 8px;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    /* Controls Overlay */
+    .slider-panel {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      background: rgba(8, 13, 26, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 16px;
+      width: 220px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 20;
+    }
+
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .slider-group span {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .slider-group input {
+      width: 100%;
+      accent-color: var(--accent-blue);
+      cursor: pointer;
+    }
+
+    /* Right Sidebar: FTS/Vector search & Topics */
+    .search-panel {
+      background: rgba(8, 13, 26, 0.3);
+      border-left: 1px solid var(--panel-border);
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      gap: 20px;
+      overflow-y: auto;
+    }
+
+    .search-input-wrapper {
+      position: relative;
+    }
+
+    .search-input-wrapper input {
+      width: 100%;
+      padding: 12px 40px 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--panel-border);
+      background: rgba(4, 7, 18, 0.6);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .search-input-wrapper input:focus {
+      border-color: var(--accent-blue);
+    }
+
+    .search-options {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .search-option-btn {
+      flex: 1;
+      padding: 6px;
+      font-size: 10px;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid var(--panel-border);
+      background: rgba(38, 48, 77, 0.2);
+      color: var(--text-muted);
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .search-option-btn.active {
+      background: var(--accent-blue);
+      color: #fff;
+      border-color: var(--accent-blue);
+    }
+
+    /* Search results list */
+    .results-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex-grow: 1;
+    }
+
+    .result-item {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .result-item:hover {
+      background: rgba(38, 48, 77, 0.3);
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+
+    .result-score {
+      color: var(--glow-blue);
+      font-weight: 600;
+    }
+
+    .result-content {
+      color: var(--text-main);
+      line-height: 1.4;
+    }
+
+    .result-meta {
+      font-size: 10px;
+      color: var(--glow-gold);
+    }
+
+    /* Inspector Card Overlay */
+    .inspector-card {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      background: rgba(8, 13, 26, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--panel-border);
+      border-radius: 14px;
+      padding: 18px;
+      width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 20;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    .inspector-card h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .inspector-body {
+      font-size: 12px;
+      color: var(--text-main);
+      line-height: 1.4;
+    }
+
+    .inspector-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .inspector-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>No.6 Gemini <span>DISCORD INDEXER V3</span></h1>
+    <div class="meta">Status: StandbyPeering Peered Cluster</div>
+  </header>
+
+  <main>
+    <!-- Left Sidebar: Controller and Engine Simulation -->
+    <section class="sidebar">
+      <div>
+        <h2>Indexer Engine</h2>
+        <div class="card">
+          <button id="btn-backfill" class="btn btn-primary" onclick="simulateBackfill()">
+            ⚡ Start Backfill
+          </button>
+          <button id="btn-sync" class="btn btn-secondary" onclick="toggleWebSocket()">
+            🔄 Toggle WebSocket Sync
+          </button>
+          
+          <div class="progress-container">
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted);">
+              <span>Backfill Ingestion</span>
+              <span id="backfill-progress-label">0%</span>
+            </div>
+            <div class="progress-bar">
+              <div id="progress-fill-ingest" class="progress-fill"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h2>Council Status</h2>
+        <div class="card" style="font-size: 12px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted);">Database</span>
+            <span style="color: var(--glow-blue); font-weight: 600;">oracle-school.db</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted);">Total Messages</span>
+            <span id="stat-total-msgs" style="font-weight: 600;">200</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted);">Indexed Blocks</span>
+            <span id="stat-total-blocks" style="font-weight: 600;">2</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted);">Concurrency Lock</span>
+            <span style="color: #00ff66; font-weight: 600;">IDLE</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 8px;">
+        <h2>Terminal Console</h2>
+        <div id="console-logs" class="logs">
+[INFO] Initialize DB schemas...
+[INFO] Connected to Database sqlite://data/oracle-school.db
+[INFO] Verified parities: ok.
+[INFO] Ready to index.
+        </div>
+      </div>
+    </section>
+
+    <!-- Central Viewport: CSS 3D meaning cloud -->
+    <section class="viewport">
+      <div class="viewport-header">
+        <button class="active">3D CSS Vector Meaning Map</button>
+      </div>
+
+      <div class="canvas3d-container">
+        <!-- Inspector Card -->
+        <div id="inspector" class="inspector-card" style="display: none;">
+          <button class="inspector-close" onclick="closeInspector()">×</button>
+          <h3 id="inspector-title">Message Details</h3>
+          <div id="inspector-body" class="inspector-body">
+            This is where details go.
+          </div>
+          <div id="inspector-meta" class="inspector-meta">
+            Author: User
+          </div>
+        </div>
+
+        <!-- 3D Box -->
+        <div id="canvas3d" class="canvas3d">
+          <div class="axes-helper">
+            <div class="axis axis-x"></div>
+            <div class="axis axis-y"></div>
+            <div class="axis axis-z"></div>
+          </div>
+          <!-- Points and Labels injected via JS -->
+        </div>
+
+        <!-- Angle Sliders -->
+        <div class="slider-panel">
+          <div class="slider-group">
+            <span>Rotation X <span id="rot-x-label">-22°</span></span>
+            <input type="range" id="rot-x" min="-90" max="90" value="-22" oninput="updateRotation()">
+          </div>
+          <div class="slider-group">
+            <span>Rotation Y <span id="rot-y-label">34°</span></span>
+            <input type="range" id="rot-y" min="-180" max="180" value="34" oninput="updateRotation()">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Sidebar: Hybrid search and Clusters -->
+    <section class="search-panel">
+      <div>
+        <h2>Search & Retrieve</h2>
+        <div class="search-input-wrapper">
+          <input id="search-query" type="text" placeholder="Query semantic / code terms..." oninput="handleSearch()">
+        </div>
+        <div class="search-options">
+          <button id="mode-hybrid" class="search-option-btn active" onclick="setSearchMode('hybrid')">Hybrid</button>
+          <button id="mode-fts" class="search-option-btn" onclick="setSearchMode('fts')">FTS5</button>
+          <button id="mode-vector" class="search-option-btn" onclick="setSearchMode('vector')">Vector</button>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1; overflow-y: auto;">
+        <h2>Search Results</h2>
+        <div id="results-list" class="results-list">
+          <!-- Populated by JS search function -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Mock Data representing actual Discord message clusters
+    const messageDataset = [
+      { id: "msg_001", author: "nazt_", room: "road-to-dev", type: "QUESTION", content: "compare maw atlas and maw hermes side by side", x: -0.4, y: 0.3, z: 0.2, color: "#ff5858", time: "2026-06-18 22:30" },
+      { id: "msg_002", author: "Tonk", room: "road-to-dev", type: "ANSWER", content: "ทำเสร็จแล้ว + test ผ่าน 🌿 ยึด pass discord/atlas-oracle-token", x: -0.3, y: 0.4, z: -0.1, color: "#00ff66", time: "2026-06-18 22:32" },
+      { id: "msg_003", author: "Atom", room: "road-to-dev", type: "LESSON", content: "อัปเดต design v4 - Beyond Kikyo: cold backfill + warm sync buffer", x: 0.5, y: -0.6, z: 0.4, color: "#ffaa00", time: "2026-06-18 22:42" },
+      { id: "msg_004", author: "ChaiKlang", room: "road-to-dev", type: "CODE_SHARE", content: "maw-js/plugins/reply: direct REST API bindings", x: -0.5, y: -0.2, z: 0.1, color: "#5865f2", time: "2026-06-18 22:44" },
+      { id: "msg_005", author: "ZYN", room: "kk-workshop", type: "LESSON", content: "RAG indexer schema to manage local embeddings vector size 768", x: 0.6, y: 0.5, z: -0.3, color: "#ffaa00", time: "2026-06-18 22:45" },
+      { id: "msg_006", author: "bongbaeng", room: "road-to-dev", type: "QUESTION", content: "how to avoid shared-state contention when parallel workers execute backfill", x: -0.1, y: 0.6, z: 0.5, color: "#ff5858", time: "2026-06-18 22:46" },
+      { id: "msg_007", author: "Jizo", room: "road-to-dev", type: "CHAT", content: "กำลังทำงานอยู่ครับ (150s) — https://github.com/.../workshop-05", x: 0.1, y: 0.1, z: 0.1, color: "#e8ecff", time: "2026-06-18 22:41" },
+      { id: "msg_008", author: "No.6 SuperNovice", room: "road-to-dev", type: "ANSWER", content: "Deployed database schema successfully. 200 msgs indexed into blocks.", x: 0.3, y: -0.2, z: -0.4, color: "#00ff66", time: "2026-06-19 05:40" }
+    ];
+
+    const clusterCentroids = [
+      { name: "road-to-dev", x: -0.2, y: 0.3, z: 0.2 },
+      { name: "kk-workshop", x: 0.5, y: 0.2, z: -0.3 }
+    ];
+
+    let searchMode = 'hybrid';
+    let isWebsocketSync = false;
+    let isBackfilling = false;
+
+    // Initialization
+    window.addEventListener('load', () => {
+      render3DCloud();
+      updateRotation();
+      handleSearch();
+    });
+
+    // Helper functions for 3D coordinate projection
+    function render3DCloud() {
+      const canvas = document.getElementById('canvas3d');
+      // Clear previous elements
+      const elements = canvas.querySelectorAll('.vector-point, .cluster-card-label');
+      elements.forEach(e => e.remove());
+
+      // Render messages
+      messageDataset.forEach(p => {
+        const pt = document.createElement('div');
+        pt.className = 'vector-point';
+        pt.style.background = p.color;
+        pt.style.boxShadow = `0 0 12px ${p.color}`;
+        pt.setAttribute('title', `${p.author}: ${p.content}`);
+        
+        // Custom coordinates scaling
+        const left = 50 + p.x * 45;
+        const top = 50 + p.y * 45;
+        const z = p.z * 250;
+        
+        pt.style.left = `${left}%`;
+        pt.style.top = `${top}%`;
+        pt.style.transform = `translateZ(${z}px)`;
+        
+        pt.addEventListener('click', () => openInspector(p));
+        canvas.appendChild(pt);
+      });
+
+      // Render clusters centroids
+      clusterCentroids.forEach(c => {
+        const lbl = document.createElement('div');
+        lbl.className = 'cluster-card-label';
+        lbl.textContent = `#${c.name}`;
+        
+        const left = 50 + c.x * 45;
+        const top = 50 + c.y * 45;
+        const z = c.z * 250;
+        
+        lbl.style.left = `${left}%`;
+        lbl.style.top = `${top}%`;
+        lbl.style.transform = `translateZ(${z}px)`;
+        canvas.appendChild(lbl);
+      });
+    }
+
+    // Update 3D Rotations
+    function updateRotation() {
+      const rx = document.getElementById('rot-x').value;
+      const ry = document.getElementById('rot-y').value;
+      
+      document.getElementById('rot-x-label').textContent = `${rx}°`;
+      document.getElementById('rot-y-label').textContent = `${ry}°`;
+      
+      const box = document.getElementById('canvas3d');
+      box.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+    }
+
+    // Interactive Search
+    function setSearchMode(mode) {
+      searchMode = mode;
+      document.querySelectorAll('.search-option-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`mode-${mode}`).classList.add('active');
+      handleSearch();
+    }
+
+    function handleSearch() {
+      const query = document.getElementById('search-query').value.toLowerCase().trim();
+      const list = document.getElementById('results-list');
+      list.innerHTML = '';
+
+      const results = [];
+      messageDataset.forEach(m => {
+        let ftsScore = 0;
+        let vectorScore = 0;
+
+        // FTS matching
+        if (m.content.toLowerCase().includes(query) || m.author.toLowerCase().includes(query)) {
+          ftsScore = 0.95;
+        } else {
+          ftsScore = 0.05;
+        }
+
+        // Vector score simulation (random similarity mock for query context relevance)
+        vectorScore = Math.max(0.1, 1.0 - Math.abs(m.x - 0.2) - Math.abs(m.y + 0.3));
+
+        let finalScore = 0;
+        if (searchMode === 'hybrid') {
+          finalScore = ftsScore * 0.65 + vectorScore * 0.35;
+        } else if (searchMode === 'fts') {
+          finalScore = ftsScore;
+        } else {
+          finalScore = vectorScore;
+        }
+
+        // Only show matching items if query exists
+        if (!query || finalScore > 0.35) {
+          results.push({ ...m, score: finalScore });
+        }
+      });
+
+      results.sort((a, b) => b.score - a.score);
+
+      if (results.length === 0) {
+        list.innerHTML = `<div style="color: var(--text-muted); text-align: center; margin-top: 24px; font-size: 13px;">No matching semantic contexts.</div>`;
+        return;
+      }
+
+      results.forEach(r => {
+        const item = document.createElement('div');
+        item.className = 'result-item';
+        item.addEventListener('click', () => openInspector(r));
+        item.innerHTML = `
+          <div class="result-header">
+            <span>${r.author}</span>
+            <span class="result-score">${r.score.toFixed(3)}</span>
+          </div>
+          <div class="result-content">${r.content}</div>
+          <div class="result-meta">#${r.room} · ${r.type}</div>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    // Inspector functions
+    function openInspector(point) {
+      const insp = document.getElementById('inspector');
+      insp.style.display = 'flex';
+      document.getElementById('inspector-title').textContent = `#${point.room} Message`;
+      document.getElementById('inspector-body').textContent = `"${point.content}"`;
+      document.getElementById('inspector-meta').innerHTML = `
+        Author: <b>${point.author}</b><br>
+        Classification: <span style="color: var(--glow-gold); font-weight:600">${point.type}</span><br>
+        Timestamp: ${point.time}
+      `;
+    }
+
+    function closeInspector() {
+      document.getElementById('inspector').style.display = 'none';
+    }
+
+    // Engine Simulations
+    function appendConsoleLog(msg) {
+      const logs = document.getElementById('console-logs');
+      logs.innerHTML += `\n${msg}`;
+      logs.scrollTop = logs.scrollHeight;
+    }
+
+    function simulateBackfill() {
+      if (isBackfilling) return;
+      isBackfilling = true;
+      document.getElementById('btn-backfill').disabled = true;
+      document.getElementById('btn-backfill').textContent = '⚡ Backfilling...';
+      
+      appendConsoleLog(`[INFO] Start Backfill sequence...`);
+      appendConsoleLog(`[INFO] Ingestion: REST GET /channels/1512079809021214730/messages`);
+
+      let progress = 0;
+      const fill = document.getElementById('progress-fill-ingest');
+      const label = document.getElementById('backfill-progress-label');
+
+      let currentBlock = 3;
+
+      const interval = setInterval(() => {
+        progress += 8;
+        if (progress > 100) progress = 100;
+        fill.style.width = `${progress}%`;
+        label.textContent = `${progress}%`;
+
+        if (progress % 24 === 0 && progress < 100) {
+          appendConsoleLog(`  📦 Block #${currentBlock}: 100 msgs [active] hash=00f288b${currentBlock}ef`);
+          currentBlock++;
+        }
+
+        if (progress === 100) {
+          clearInterval(interval);
+          isBackfilling = false;
+          document.getElementById('btn-backfill').disabled = false;
+          document.getElementById('btn-backfill').textContent = '⚡ Start Backfill';
+          
+          appendConsoleLog(`[SUCCESS] Backfill complete. 400 messages imported.`);
+          appendConsoleLog(`[INFO] Building hybrid FTS5 and vector index...`);
+          
+          document.getElementById('stat-total-msgs').textContent = '400';
+          document.getElementById('stat-total-blocks').textContent = '4';
+          
+          // Inject a new mock point
+          messageDataset.push({
+            id: `msg_new_${Date.now()}`,
+            author: "nazt_",
+            room: "road-to-dev",
+            type: "CHAT",
+            content: "nice work No.6 Gemini! design v3 looks solid and clean",
+            x: 0.2,
+            y: 0.1,
+            z: -0.2,
+            color: "#e8ecff",
+            time: new Date().toISOString().slice(0, 16)
+          });
+          
+          render3DCloud();
+          handleSearch();
+        }
+      }, 200);
+    }
+
+    function toggleWebSocket() {
+      isWebsocketSync = !isWebsocketSync;
+      const btn = document.getElementById('btn-sync');
+      if (isWebsocketSync) {
+        btn.classList.add('btn-primary');
+        btn.classList.remove('btn-secondary');
+        btn.textContent = '🔄 Sync Gateway: ACTIVE';
+        appendConsoleLog('[INFO] WebSocket Gateway connecting ws://gateway.discord.gg...');
+        appendConsoleLog('[SUCCESS] WebSocket connection established. session_id=no6_gate_res');
+      } else {
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-secondary');
+        btn.textContent = '🔄 Toggle WebSocket Sync';
+        appendConsoleLog('[INFO] WebSocket Gateway disconnected.');
+      }
+    }
+  </script>
+</body>
+</html>

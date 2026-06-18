@@ -1,0 +1,17 @@
+{
+  "name": "kikyo",
+  "version": "0.1.0",
+  "entry": "./index.ts",
+  "sdk": "^1.0.0",
+  "description": "Kikyo Discord mirror/backfill: rooms + threads → JSON → SQLite parity → frontend",
+  "author": "Kikyo·Codex",
+  "capabilities": ["fs:read", "fs:write", "net:http"],
+  "cli": {
+    "command": "kikyo",
+    "aliases": ["kk"],
+    "help": "maw kikyo <backfill|db|frontend|check> — Kikyo Discord mirror/backfill"
+  },
+  "weight": 55,
+  "license": "MIT",
+  "schemaVersion": 1
+}

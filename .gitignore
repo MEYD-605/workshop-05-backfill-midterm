@@ -1,0 +1,11 @@
+node_modules/
+data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.db-shm
+.discord/
+.env
+.env.local
+.env.development
+.env.production
+.env.staging
