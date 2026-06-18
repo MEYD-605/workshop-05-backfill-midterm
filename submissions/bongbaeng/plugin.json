@@ -1,0 +1,12 @@
+{
+  "name": "bongbaeng-backfill",
+  "version": "0.1.0",
+  "entry": "./cli.ts",
+  "sdk": "^1.0.0",
+  "description": "bongbaeng Discord backfill: REST pull → SQLite (parity + edit_history + watermark) → FTS5+vector hybrid search",
+  "author": "twentyfxurth-k (bongbaeng Oracle)",
+  "capabilities": ["fs:read", "fs:write", "net:http"],
+  "cli": { "command": "bongbaeng-backfill", "help": "backfill <channel> | search <q> | stats" },
+  "license": "MIT",
+  "schemaVersion": 1
+}
