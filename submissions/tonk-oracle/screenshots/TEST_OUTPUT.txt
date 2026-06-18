@@ -1,0 +1,8 @@
+$ bun test
+# 2026-06-18T23:31:55Z
+bun test v1.3.14 (0d9b296a)
+
+ 9 pass
+ 0 fail
+ 31 expect() calls
+Ran 9 tests across 1 file. [17.00ms]
