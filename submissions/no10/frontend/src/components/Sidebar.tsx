@@ -27,8 +27,8 @@ export default function Sidebar({ guild, selected, onSelect }: Props) {
         </div>
       </div>
       <div className="h-[60px] bg-[#232428] px-2 flex items-center gap-2">
-        <div className="w-8 h-8 rounded-full bg-[#23a55a] flex items-center justify-center text-white font-bold">K</div>
-        <div className="min-w-0 flex-1"><div className="text-sm font-semibold text-white">Kikyo</div><div className="text-xs text-[#b5bac1]">mirror online</div></div>
+        <div className="w-8 h-8 rounded-full bg-[#5865f2] flex items-center justify-center text-white font-bold">10</div>
+        <div className="min-w-0 flex-1"><div className="text-sm font-semibold text-white">No.10 X</div><div className="text-xs text-[#b5bac1]">mirror online</div></div>
         {[MicOff, Headphones, Settings].map((Icon, i) => <button key={i} disabled className="cursor-not-allowed opacity-40"><Icon size={18}/></button>)}
       </div>
     </aside>

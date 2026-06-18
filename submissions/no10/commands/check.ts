@@ -17,7 +17,7 @@ const REQUIRED = [
 
 export async function check(log: (s: string) => void) {
   const root = process.cwd();
-  log("maw kikyo check");
+  log("maw no10 check");
   log(`root: ${root}`);
   let missing = 0;
   for (const file of REQUIRED) {
@@ -28,5 +28,5 @@ export async function check(log: (s: string) => void) {
     const commands = readdirSync(resolve(root, "commands")).filter((f: string) => f.endsWith(".ts")).sort();
     log(`commands: ${commands.join(", ")}`);
   }
-  log(missing ? `\n✗ ${missing} missing file(s)` : "\n✓ kikyo plugin is internally consistent");
+  log(missing ? `\n✗ ${missing} missing file(s)` : "\n✓ no10-indexer plugin is internally consistent");
 }

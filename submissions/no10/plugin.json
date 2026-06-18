@@ -1,15 +1,15 @@
 {
-  "name": "kikyo",
-  "version": "0.1.0",
+  "name": "no10-indexer",
+  "version": "0.2.0",
   "entry": "./index.ts",
   "sdk": "^1.0.0",
-  "description": "Kikyo Discord mirror/backfill: rooms + threads → JSON → SQLite parity → frontend",
-  "author": "Kikyo·Codex",
+  "description": "No.10 X Discord mirror/backfill: rooms + threads → JSON → SQLite parity → frontend (Derivative of Kikyo·Codex)",
+  "author": "No.10 X (Derived from Kikyo·Codex)",
   "capabilities": ["fs:read", "fs:write", "net:http"],
   "cli": {
-    "command": "kikyo",
-    "aliases": ["kk"],
-    "help": "maw kikyo <backfill|db|frontend|check> — Kikyo Discord mirror/backfill"
+    "command": "no10",
+    "aliases": ["n10"],
+    "help": "maw no10 <backfill|db|frontend|check> — No.10 X Discord mirror/backfill"
   },
   "weight": 55,
   "license": "MIT",

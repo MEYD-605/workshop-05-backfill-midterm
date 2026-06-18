@@ -11,18 +11,18 @@ function argValue(args: string[], name: string): string | undefined {
 
 export function defaultPaths(args: string[]) {
   const root = argValue(args, "--root") || process.cwd();
-  const mirrorDir = argValue(args, "--mirror") || join(root, ".discord/kikyo-mirror");
-  const dbPath = argValue(args, "--db") || join(root, ".discord/kikyo.sqlite");
-  const outPath = argValue(args, "--out") || join(root, ".discord/kikyo-frontend/index.html");
+  const mirrorDir = argValue(args, "--mirror") || join(root, ".discord/no10-mirror");
+  const dbPath = argValue(args, "--db") || join(root, ".discord/no10.sqlite");
+  const outPath = argValue(args, "--out") || join(root, ".discord/no10-frontend/index.html");
   return { root, mirrorDir, dbPath, outPath };
 }
 
 function usage(log: (s: string) => void) {
   log("usage:");
-  log("  maw kikyo db build [--mirror=DIR] [--db=FILE]");
-  log("  maw kikyo db check [--mirror=DIR] [--db=FILE]");
-  log("  maw kikyo db frontend [--db=FILE] [--out=HTML]");
-  log("  maw kikyo db all [same options]");
+  log("  maw no10 db build [--mirror=DIR] [--db=FILE]");
+  log("  maw no10 db check [--mirror=DIR] [--db=FILE]");
+  log("  maw no10 db frontend [--db=FILE] [--out=HTML]");
+  log("  maw no10 db all [same options]");
 }
 
 export async function db(log: (s: string) => void, args: string[]) {
@@ -31,7 +31,7 @@ export async function db(log: (s: string) => void, args: string[]) {
   if (!sub || sub === "help" || sub === "--help" || sub === "-h") { usage(log); return; }
   if (!existsSync(paths.mirrorDir) && (sub === "build" || sub === "check" || sub === "all" || sub === "frontend")) {
     log(`✗ mirror dir not found: ${paths.mirrorDir}`);
-    log("run: maw kikyo backfill --guild=<name> --all");
+    log("run: maw no10 backfill --guild=<name> --all");
     return;
   }
 

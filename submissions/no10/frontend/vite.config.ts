@@ -4,5 +4,5 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  build: { outDir: '../.discord/kikyo-vite', emptyOutDir: true },
+  build: { outDir: '../.discord/no10-vite', emptyOutDir: true },
 });

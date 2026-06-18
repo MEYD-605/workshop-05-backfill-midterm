@@ -22,7 +22,7 @@ export default function SearchPanel({ data, query, setQuery, onJump }: Props) {
         <div className="text-xs text-[#949ba4]">#{r.room.name}{r.thread ? ` / 🧵 ${r.thread.name}` : ''} · {r.message.author_name || r.message.author_id || 'unknown'}</div>
         <div className="text-sm text-[#dbdee1] truncate">{r.text || '(no content)'}</div>
       </button>)}
-      {!results.length && <div className="text-sm text-[#949ba4] px-2 py-1">No local result. Use `maw kikyo search "{query}" --mode=hybrid` for DB/vector search.</div>}
+      {!results.length && <div className="text-sm text-[#949ba4] px-2 py-1">No local result. Use `maw no10 search "{query}" --mode=hybrid` for DB/vector search.</div>}
     </div>}
   </div>;
 }

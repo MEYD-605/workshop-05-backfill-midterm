@@ -12,12 +12,12 @@ export default function App() {
   const [query, setQuery] = useState('');
   const [view, setView] = useState<'discord' | 'vectors'>('discord');
 
-  useEffect(() => { fetch('/kikyo-data.json').then(r => r.json()).then((d: MirrorData) => { setData(d); setSelectedRoomId(d.guilds[0]?.rooms[0]?.id || ''); }); }, []);
+  useEffect(() => { fetch('/no10-data.json').then(r => r.json()).then((d: MirrorData) => { setData(d); setSelectedRoomId(d.guilds[0]?.rooms[0]?.id || ''); }); }, []);
 
   const guild = data?.guilds[0];
   const selectedRoom = useMemo<Room | null>(() => guild?.rooms.find(r => r.id === selectedRoomId) || guild?.rooms[0] || null, [guild, selectedRoomId]);
 
-  if (!data || !guild) return <div className="h-screen bg-[#313338] text-white flex items-center justify-center">Loading Kikyo mirror…</div>;
+  if (!data || !guild) return <div className="h-screen bg-[#313338] text-white flex items-center justify-center">Loading No.10 X mirror (Derived from Kikyo)…</div>;
   return <div className="h-screen w-screen overflow-hidden bg-[#313338] text-[#dbdee1] flex">
     <Sidebar guild={guild} selected={selectedRoom} onSelect={(room) => { setSelectedRoomId(room.id); setSelectedThread(null); }} />
     <div className="flex-1 flex flex-col min-w-0">

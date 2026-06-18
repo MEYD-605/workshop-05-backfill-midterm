@@ -10,13 +10,13 @@ function argValue(args: string[], name: string): string | undefined {
 }
 function usage(log: Log) {
   log("usage:");
-  log("  maw kikyo search index [--db=FILE]");
-  log("  maw kikyo search <query> [--mode=hybrid|fts|vector] [--limit=N] [--db=FILE]");
+  log("  maw no10 search index [--db=FILE]");
+  log("  maw no10 search <query> [--mode=hybrid|fts|vector] [--limit=N] [--db=FILE]");
 }
 
 export async function search(log: Log, args: string[]) {
   const paths = defaultPaths(args);
-  if (!existsSync(paths.dbPath)) { log(`✗ DB not found: ${paths.dbPath}`); log("run: maw kikyo backfill --guild=<name> --all"); return; }
+  if (!existsSync(paths.dbPath)) { log(`✗ DB not found: ${paths.dbPath}`); log("run: maw no10 backfill --guild=<name> --all"); return; }
   const sub = args[1]?.toLowerCase();
   if (!sub || sub === "help" || sub === "--help" || sub === "-h") { usage(log); return; }
   if (sub === "index" || sub === "build") {

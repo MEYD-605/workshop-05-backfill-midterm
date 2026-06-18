@@ -1,5 +1,6 @@
 /**
- * maw kikyo — Kikyo's own Discord mirror/backfill plugin.
+ * maw no10 — No.10 X Discord mirror/backfill plugin.
+ * Derived from Kikyo·Codex's Discord mirror/backfill engine.
  */
 import type { InvokeContext, InvokeResult } from "maw-js/plugin/types";
 import { backfill } from "./commands/backfill";
@@ -8,8 +9,8 @@ import { check } from "./commands/check";
 import { search } from "./commands/search";
 
 export const command = {
-  name: "kikyo",
-  description: "Kikyo Discord mirror/backfill: rooms + threads → DB parity → frontend.",
+  name: "no10",
+  description: "No.10 X Discord mirror/backfill: rooms + threads → DB parity → frontend (Derivative of Kikyo).",
 };
 
 const HELP = `
@@ -28,7 +29,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
   const sub = args[0]?.toLowerCase();
 
   if (!sub || sub === "help" || sub === "--help" || sub === "-h") {
-    log("maw kikyo — Kikyo Discord mirror/backfill");
+    log("maw no10 — No.10 X Discord mirror/backfill (Derived from Kikyo·Codex)");
     log("");
     for (const line of HELP.split("\n")) log(`  ${line.trim()}`);
     return done(true);
@@ -42,7 +43,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
       case "frontend": await db(log, ["db", "frontend", ...args.slice(1)]); break;
       case "check": await check(log); break;
       default:
-        log(`unknown: ${sub} — run 'maw kikyo --help'`);
+        log(`unknown: ${sub} — run 'maw no10 --help'`);
         return done(false);
     }
     return done(true);

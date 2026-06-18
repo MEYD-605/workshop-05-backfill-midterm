@@ -31,7 +31,7 @@ function argValue(args: string[], name: string): string | undefined {
 
 function help(log: Log) {
   log("usage:");
-  log("  maw kikyo backfill [--guild=name-or-id] [--limit=N|--all] [--root=DIR] [--dry-run] [--active-only]");
+  log("  maw no10 backfill [--guild=name-or-id] [--limit=N|--all] [--root=DIR] [--dry-run] [--active-only]");
   log("");
   log("Pipeline: Discord rooms+threads → JSON mirror → SQLite DB → exact parity check → frontend");
 }

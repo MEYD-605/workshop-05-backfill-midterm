@@ -4,8 +4,8 @@ import { dirname, join } from "path";
 
 type Row = Record<string, any>;
 const root = process.cwd();
-const dbPath = process.env.KIKYO_DB || join(root, ".discord/kikyo.sqlite");
-const outPath = process.env.KIKYO_FRONTEND_DATA || join(root, "frontend/public/kikyo-data.json");
+const dbPath = process.env.NO10_DB || join(root, ".discord/no10.sqlite");
+const outPath = process.env.NO10_FRONTEND_DATA || join(root, "frontend/public/no10-data.json");
 const db = new Database(dbPath);
 
 const one = (sql: string) => db.query(sql).get() as Row;
@@ -57,7 +57,7 @@ const topics = all(`SELECT topic_id, label, scope, room_id, thread_id, count, ke
 }));
 let diff = { previousMessages: 0, currentMessages: totals.messages, deltaMessages: totals.messages };
 try {
-  const lines = await Bun.file(join(root, ".discord/kikyo-mirror/mirror-runs.jsonl")).text().then(t => t.trim().split(/\n/).filter(Boolean));
+  const lines = await Bun.file(join(root, ".discord/no10-mirror/mirror-runs.jsonl")).text().then(t => t.trim().split(/\n/).filter(Boolean));
   const prev = lines.length > 1 ? JSON.parse(lines[lines.length - 2]) : null;
   if (prev?.totals) diff = { previousMessages: prev.totals.messages || 0, currentMessages: totals.messages, deltaMessages: totals.messages - (prev.totals.messages || 0) };
 } catch {}
