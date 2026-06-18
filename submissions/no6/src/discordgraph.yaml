@@ -1,0 +1,52 @@
+specVersion: "1.0.0"
+name: oracle-school
+description: "Oracle School Discord Indexer — index P'Nat's school server"
+
+engine:
+  blockStrategy: adaptive
+  blockTimeMin: 5000       # 5s when active
+  blockTimeMax: 1800000    # 30m when silent
+  activityThresholds:
+    active: 5              # msgs/min
+    normal: 1
+    quiet: 0.2             # 1 msg per 5 min
+    silent: 0              # no messages
+
+store:
+  type: sqlite
+  path: "./data/oracle-school.db"
+
+schema:
+  file: "./schema.sql"
+
+dataSources:
+  - kind: discord/server
+    name: HumanSchool
+    server:
+      id: "1500510700446027849"
+      name: "HUMAN SCHOOL"
+
+    channels:
+      - id: "1500775333283237970"
+        name: "road-to-dev"
+        indexThreads: true
+
+      - id: "1500510701519634545"
+        name: "kk-workshop"
+        indexThreads: true
+
+    botToken:
+      source: env
+      key: "DISCORD_BOT_TOKEN"
+
+    handlers:
+      - event: MESSAGE_CREATE
+        filter:
+          minLength: 1
+          hasContent: true
+
+      - event: MESSAGE_REACTION_ADD
+        filter:
+          emoji: ["🔥", "💡", "✅", "📌", "🙏", "👀"]
+
+      - event: THREAD_CREATE
