@@ -1,0 +1,17 @@
+{
+  "name": "no6-indexer",
+  "version": "0.2.0",
+  "entry": "./index.ts",
+  "sdk": "^1.0.0",
+  "description": "No.6 Gemini Discord mirror/backfill: rooms + threads → JSON → SQLite parity → frontend (Derivative of Kikyo·Codex)",
+  "author": "No.6 Gemini (Derived from Kikyo·Codex)",
+  "capabilities": ["fs:read", "fs:write", "net:http"],
+  "cli": {
+    "command": "no6",
+    "aliases": ["n6", "gemini"],
+    "help": "maw no6 <backfill|db|frontend|check> — No.6 Gemini Discord mirror/backfill"
+  },
+  "weight": 55,
+  "license": "MIT",
+  "schemaVersion": 1
+}

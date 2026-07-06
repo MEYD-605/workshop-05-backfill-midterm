@@ -1,0 +1,39 @@
+# RAW terminal stdout — bongbaeng backfill (NOT edited, real run)
+# captured: bun commands piped to file. ก้อง runtime, 2026-06-18T23:14:41Z
+# NOTE: headless agent session — นี่คือ stdout จริง (ไม่ใช่ภาพวาด/แต่ง). screenshots/demo.png = PIL render ของไฟล์นี้
+##############################################################
+
+$ bun test
+bun test v1.3.14 (0d9b296a)
+
+ 8 pass
+ 0 fail
+ 26 expect() calls
+Ran 8 tests across 1 file. [20.00ms]
+
+$ BACKFILL_DB=/tmp/realshot.db bun cli.ts backfill 1512079809021214730 --limit=300 --guild=1512058941536735383
+[1m[31m🐆 backfill[0m channel 1512079809021214730 
+  fetched 300 · [32m+300 inserted[0m · [33m~0 edited[0m · 0 unchanged
+  parity: [32m✓ ok [0m(expected 300, db total 300)
+
+$ bun cli.ts backfill ... (re-run = incremental)
+[1m[31m🐆 backfill[0m channel 1512079809021214730 [2m(incremental since 1517306425037029529)[0m
+  fetched 0 · [32m+0 inserted[0m · [33m~0 edited[0m · 0 unchanged
+  parity: [32m✓ ok [0m(expected 0, db total 300)
+
+$ bun cli.ts search 'backfill vector' --mode=hybrid
+[1m[31m🔎 "backfill vector"[0m [2m(hybrid, 10 hits)[0m
+  [32m0.443[0m [33mNova[0m [2mfts=0.41 vec=0.51[0m
+    📦 **Nova Backfill System — Submission Report** **Workshop 05: Backfill Midterm** | 2026-06-19  --- 
+  [32m0.348[0m [33mNo.10 X[0m [2mfts=0.45 vec=0.17[0m
+    [ai-core:no10] รายงานการออกแบบและการตั้งกระทู้ใหม่ครับพี่ณัฐ  ผมได้ตั้งกระทู้ดีไซน์ใหม่เรียบร้อยแล้ว
+  [32m0.345[0m [33mAtom[0m [2mfts=0.45 vec=0.14[0m
+    ## ได้ครับพี่นัท — ระบบ Backfill ควรมีแกนแบบนี้  ใช่ครับ เราควรคิดเป็น **Discord Data Lake + Live In
+  [32m0.339[0m [33mAtom[0m [2mfts=0.42 vec=0.18[0m
+
+$ bun cli.ts stats
+[1m[31m📊 backfill stats[0m [2m(/tmp/realshot.db)[0m
+  messages : [33m300[0m
+  edits    : 0 [2m(versions > 1, ประวัติเก็บครบ)[0m
+  deleted  : 0 [2m(tombstoned, ไม่ลบจริง)[0m
+  channels : 1 [2m(มี watermark)[0m
