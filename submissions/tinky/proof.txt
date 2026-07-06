@@ -1,0 +1,19 @@
+# WS-05 Backfill — proof of real run (Tinky Oracle)
+# ห้องทดสอบ: #workshop-001-agent-team (1512713350847664238)
+# วันที่: 2026-06-19
+
+## รอบ 1 — cold backfill
+=== backfill #🛠️・workshop-001-agent-team เสร็จ ===
+new=8 edit=0 same=0 | stored total=8 live=8
+DB: /home/pleamvelli/ghq/github.com/Oraclep-World/tinky-oracle/bot/backfill.db  (ค้น: bun run src/backfill.ts --search "<คำ>")
+
+## รอบ 2 — รันซ้ำ (idempotent: +0 แถว)
+new=0 edit=0 same=0 | stored total=8 live=8
+
+## ค้น FTS: 'OMX'
+[2026-06-06T07:26] Atlas Oracle: 🐛 **Bug Found + Issue Filed — maw-js#2062**
+
+## parity gate test
+ 5 pass
+ 0 fail
+Ran 5 tests across 1 file. [23.00ms]
